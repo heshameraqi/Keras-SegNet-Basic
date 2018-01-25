@@ -4,7 +4,7 @@ import os
 
 
 import keras.models as models
-from keras.layers.core import Layer, Dense, Dropout, Activation, Flatten, Reshape, Merge, Permute
+from keras.layers.core import Layer, Dense, Dropout, Activation, Flatten, Reshape, Permute
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, ZeroPadding2D
 from keras.layers.normalization import BatchNormalization
 
@@ -14,7 +14,8 @@ from keras import backend as K
 import cv2
 import numpy as np
 import json
-np.random.seed(07) # 0bserver07 for reproducibility
+#np.random.seed(07) # 0bserver07 for reproducibility
+np.random.seed(7) # 0bserver07 for reproducibility
 
 
 img_w = 480
@@ -100,6 +101,7 @@ decoding_layers = [
     Activation('relu'),
 
     UpSampling2D(size=(pool_size,pool_size)),
+    ZeroPadding2D(padding=(1,0)),
     Convolution2D(256, kernel, kernel, border_mode='same'),
     BatchNormalization(),
     Activation('relu'),
@@ -141,6 +143,10 @@ segnet_basic.decoding_layers = decoding_layers
 for l in segnet_basic.decoding_layers:
     segnet_basic.add(l)
 
+
+#segnet_basic.summary()
+#import pdb
+#pdb.set_trace()
 
 segnet_basic.add(Reshape((n_labels, img_h * img_w), input_shape=(12,img_h, img_w)))
 segnet_basic.add(Permute((2, 1)))
